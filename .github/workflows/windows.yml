@@ -20,17 +20,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Finds the installed Visual Studio, imports the x64 dev environment
+      # (cl.exe, link.exe, INCLUDE/LIB) into the job's PATH.
+      - name: Set up MSVC (x64)
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
       - name: Cache JUCE 7.0.12 sources
         uses: actions/cache@v4
         with:
           path: build/_deps/juce-src
           key: juce-7.0.12-${{ runner.os }}
 
-      - name: Configure (CMake + VS2022 x64)
-        run: cmake -S . -B build -G "Visual Studio 17 2022" -A x64
+      # Ninja is pre-installed on all Windows runners and is now on PATH
+      # alongside cl.exe, so no generator version to guess.
+      - name: Configure (CMake + Ninja)
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=${{ matrix.config }}
 
       - name: Build
-        run: cmake --build build --config ${{ matrix.config }} --parallel
+        run: cmake --build build --parallel
 
       - name: Upload artefact
         uses: actions/upload-artifact@v4
