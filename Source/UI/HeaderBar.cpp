@@ -3,7 +3,9 @@
 namespace
 {
     // U+2212 MINUS SIGN — exactly the character the HTML button uses.
-    constexpr juce_wchar minusSign = 0x2212;
+    // Kept as a UTF-8 byte sequence so we don't depend on juce_wchar being
+    // in scope from whichever header happens to be included first.
+    constexpr char minusSignUtf8[] = "\xe2\x88\x92";
 }
 
 HeaderBar::HeaderBar()
@@ -15,11 +17,12 @@ HeaderBar::HeaderBar()
                       Theme::monoFont (Theme::Metrics::zoomReadoutFontSize),
                       Theme::Colours::accent,
                       juce::Justification::centred),
-      zoomOutButton  (juce::String::charToString (minusSign)),
+      zoomOutButton  (juce::String::fromUTF8 (minusSignUtf8)),
       zoomInButton   ("+"),
       fitButton      ("FIT"),
       downloadButton ("DOWNLOAD SVG")
 {
+    // ... unchanged from here down ...
     addAndMakeVisible (title);
     addAndMakeVisible (zoomReadout);
     addAndMakeVisible (zoomOutButton);
