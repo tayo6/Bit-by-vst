@@ -3,6 +3,7 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 
 #include "GridLayer.h"
+#include "Theme.h"          // ← was missing; Theme::Colours / Theme::Metrics need it
 
 /**
     The 1200 × 800 "sheet" — the SVG root of the HTML reference.
@@ -31,8 +32,10 @@ public:
     static juce::Rectangle<float> logicalBounds();
 
 private:
-    GridLayer fineGrid   { Theme::Metrics::sheetWidth  == 0 ? 20.0f : 20.0f,
-                           Theme::Colours::gridFine,   1.0f };
+    // <pattern id="gs" width="20"  height="20">   #d9e7f5, 1px
+    GridLayer fineGrid   { 20.0f,  Theme::Colours::gridFine,   1.0f };
+
+    // <pattern id="gl" width="100" height="100">  #b7d3ee, 1.2px
     GridLayer coarseGrid { 100.0f, Theme::Colours::gridCoarse, 1.2f };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BlueprintSheet)
